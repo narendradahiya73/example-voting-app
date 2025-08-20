@@ -1,0 +1,36 @@
+appName: example-voting-app
+replicaCount: 1
+
+image:
+  repository: your-docker-repo/example-voting-app
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+database:
+  name: example-voting-db
+  user: dbuser
+  password: dbpassword
+  port: 5432
+
+redis:
+  enabled: true
+  password: redispassword
+  port: 6379
+
+result:
+  enabled: true
+
+vote:
+  enabled: true
+
+worker:
+  enabled: true
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

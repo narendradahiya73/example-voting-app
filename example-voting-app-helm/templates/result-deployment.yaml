@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-result
+  labels:
+    app: {{ .Release.Name }}-result
+spec:
+  replicas: {{ .Values.result.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-result
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-result
+    spec:
+      containers:
+        - name: result
+          image: "{{ .Values.result.image.repository }}:{{ .Values.result.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.result.service.port }}
+          env:
+            - name: DATABASE_URL
+              value: {{ .Values.database.url | quote }}
+            - name: REDIS_URL
+              value: {{ .Values.redis.url | quote }}
+          resources:
+            requests:
+              cpu: {{ .Values.result.resources.requests.cpu }}
+              memory: {{ .Values.result.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.result.resources.limits.cpu }}
+              memory: {{ .Values.result.resources.limits.memory }}

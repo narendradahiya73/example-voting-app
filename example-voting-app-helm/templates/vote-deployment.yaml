@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-vote
+  labels:
+    app: {{ .Release.Name }}-vote
+spec:
+  replicas: {{ .Values.vote.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-vote
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-vote
+    spec:
+      containers:
+        - name: vote
+          image: "{{ .Values.vote.image.repository }}:{{ .Values.vote.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.vote.service.port }}
+          env:
+            - name: DATABASE_URL
+              value: {{ .Values.vote.databaseUrl | quote }}
+            - name: REDIS_URL
+              value: {{ .Values.vote.redisUrl | quote }}
+          resources:
+            requests:
+              cpu: {{ .Values.vote.resources.requests.cpu }}
+              memory: {{ .Values.vote.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.vote.resources.limits.cpu }}
+              memory: {{ .Values.vote.resources.limits.memory }}

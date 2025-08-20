@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-worker
+  labels:
+    app: {{ .Release.Name }}-worker
+spec:
+  replicas: {{ .Values.worker.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-worker
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-worker
+    spec:
+      containers:
+        - name: worker
+          image: {{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}
+          ports:
+            - containerPort: {{ .Values.worker.containerPort }}
+          env:
+            - name: DATABASE_URL
+              value: {{ .Values.worker.databaseUrl }}
+            - name: REDIS_URL
+              value: {{ .Values.worker.redisUrl }}
